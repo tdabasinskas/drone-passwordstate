@@ -1,4 +1,4 @@
 FROM alpine:3.7
-ADD ./drone-passwordstate .
+COPY ./release .
 
 ENTRYPOINT [ "./drone-passwordstate" ]
