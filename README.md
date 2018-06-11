@@ -10,7 +10,7 @@
 
 ### Simple usage
 
-To simply export all the secrets from the specified Passwordstate to `./secrets.yaml` file, the the following pipeline step should be added:
+To simply export all the secrets from the specified Passwordstate to `./secrets.yaml` file, the following pipeline step should be added:
 
 ```yaml
 pipeline:
@@ -24,7 +24,7 @@ pipeline:
     secrets: [ PASSWORD_STATE_KEY ]
 ```
 
-The plugin would connect to the specified Password state instance and extract the passwords as secrets using `UserName` field as the secret key and `Password` field as the secret value. Once finished, the folllwing file would be created within the workspace:
+The plugin would connect to the specified Password state instance and extract the passwords as secrets using `UserName` field as the secret key and `Password` field as the secret value. Once finished, the folllowing file would be created within the workspace:
 
 ```yaml
 secrets:
@@ -66,7 +66,7 @@ pipeline:
 
 ### Using the plugin for Kubernetes secrets
 
-One of the most likely use case for the plugin would be combining it with [drone-helm plugin](https://github.com/ipedrazas/drone-helm), allowing you to deploy the secrets as part of the whole [Helm chart](https://github.com/kubernetes/helm). The following example ilustrates the pipeline combining these two plugins:
+One of the most likely use case for the plugin would be combining it with [drone-helm plugin](https://github.com/ipedrazas/drone-helm), allowing you to deploy the secrets as part of the whole [Helm chart](https://github.com/kubernetes/helm). The following example illustrates the pipeline combining these two plugins:
 
 ```yaml
 pipeline:
@@ -106,4 +106,4 @@ data:
 
 ## Contributing
 
-Feel free to fork the repository and submit changes via a Pull Request.
+Feel free to fork the repository and submit changes via a [Pull Request](https://github.com/TDabasinskas/drone-passwordstate/compare).
