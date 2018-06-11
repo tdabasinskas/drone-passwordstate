@@ -16,6 +16,7 @@ script:
   - go build -v -ldflags "-X main.version=${TRAVIS_TAG}" -a -o ./drone-passwordstate
 
 after_success:
+  - test $TRAVIS_TAG
   - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   - export REPO=$DOCKER_REPO
   - docker build -f Dockerfile -t $REPO:$TRAVIS_TAG -t $REPO:latest .
