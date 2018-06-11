@@ -4,12 +4,11 @@ language: go
 go:
   - '1.10.3'
 
+env:
+  - GOOS=linux GOARCH=amd64 CGO_ENABLED=0
+
 git:
   depth: 1
-
-env:
-  - GOOS=linux
-  - GOARCH=amd64
 
 install:
   - go get -u github.com/golang/dep/cmd/dep

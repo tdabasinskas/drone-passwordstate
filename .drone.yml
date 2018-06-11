@@ -23,8 +23,7 @@ pipeline:
       - GOARCH=amd64
       - CGO_ENABLED=0
     commands:
-      - mkdir -p ./release/linux/amd64
-      - go build -v -ldflags "-X main.version=${DRONE_TAG##v}" -a -o ./release/linux/amd64/drone-passwordstate
+      - go build -v -ldflags "-X main.version=${DRONE_TAG##v}" -a -o ./release/drone-passwordstate
 
   release:
     image: plugins/docker
