@@ -37,6 +37,7 @@ jobs:
 
     - stage: release
       script:
+        - ls -la */
         - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         - export REPO=$DOCKER_REPO
         - docker build -f Dockerfile -t $REPO:$TRAVIS_TAG -t $REPO:latest .
