@@ -1,4 +1,5 @@
-FROM alpine:3.7
-COPY ./release .
+FROM alpine
+ADD ./release/drone-passwordstate /bin/
+RUN apk -Uuv add ca-certificates
 
-ENTRYPOINT [ "./drone-passwordstate" ]
+ENTRYPOINT /bin/drone-passwordstate
