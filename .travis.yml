@@ -26,7 +26,8 @@ jobs:
         - GOARCH=amd64
         - CGO_ENABLED=0
       script:
-        - go build -v -ldflags "-X main.version=${TRAVIS_TAG}" -a -o ./release/drone-passwordstate
+        - mkdir -p ./release/linux/amd64
+        - go build -v -ldflags "-X main.version=${TRAVIS_TAG}" -a -o ./release/linux/amd64/drone-passwordstate
 
     - stage: release
       script:
