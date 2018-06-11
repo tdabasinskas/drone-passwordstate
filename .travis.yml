@@ -1,0 +1,37 @@
+sudo: required
+
+language: go
+go:
+  - "1.10.3"
+
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: restore
+      script:
+        - go get -u github.com/golang/dep/cmd/dep
+        - dep ensure
+        - dep status
+
+    - stage: test
+      script:
+        - go vet ./...
+        - go test -cover ./...
+
+    - stage: build
+      env:
+        - GOOS=linux
+        - GOARCH=amd64
+        - CGO_ENABLED=0
+      script:
+        - go build -v -ldflags "-X main.version=${TRAVIS_TAG}" -a -o release/linux/amd64/drone-passwordstate
+
+    - stage: release
+      script:
+        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        - export REPO=$DOCKER_REPO
+        - docker build -f Dockerfile -t $REPO:$TRAVIS_TAG -t $REPO:latest .
+        - docker push $REPO
+      if: tag IS present

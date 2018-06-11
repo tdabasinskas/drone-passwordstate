@@ -1,0 +1,36 @@
+workspace:
+  base: /go
+  path: ./src/github.com/TDabasinskas/drone-passwordstate
+
+pipeline:
+  restore:
+    image: golang:1.10.3
+    commands:
+      - go get -u github.com/golang/dep/cmd/dep
+      - dep ensure
+      - dep status
+
+  test:
+    image: golang:1.10.3
+    commands:
+      - go vet ./...
+      - go test -cover ./...
+
+  build:
+    image: golang:1.10.3
+    environment:
+      - GOOS=linux
+      - GOARCH=amd64
+      - CGO_ENABLED=0
+    commands:
+      - go build -v -ldflags "-X main.version=${DRONE_TAG##v}" -a -o release/linux/amd64/drone-passwordstate
+
+  release:
+    image: plugins/docker
+    dockerfile: ./Dockerfile
+    repo: tdabasinskas/${DRONE_REPO_NAME,,}
+    insecure: false
+    tags: ["${DRONE_TAG##v}", latest]
+    secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
+    when:
+      event: [tag]
