@@ -106,4 +106,4 @@ data:
 
 ## Contributing
 
-Feel free to fork the repository and submit changes via a Pull Request.
+Feel free to fork the repository and submit changes via a [Pull Request](https://github.com/TDabasinskas/drone-passwordstate/compare).
