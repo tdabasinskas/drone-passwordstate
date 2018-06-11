@@ -15,4 +15,5 @@
 *.yaml
 
 # Releases
-[Rr]elease/
+[Rr]elease/*
+!*.gitkeep
