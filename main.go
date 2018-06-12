@@ -8,6 +8,7 @@ import	(
 )
 
 var (
+    // Will be provided during the build
 	version = "0.0.0"
 )
 
@@ -100,19 +101,19 @@ func main() {
 func run(c *cli.Context) error {
 	plugin := plugin.Plugin{
 		Config: plugin.Config{
-			ApiEndpoint: c.String("api_endpoint"),
-			ApiKey: c.String("api_key"),
-			PasswordListId: c.Int("password_list_id"),
-			ConnectionRetries: c.Int("connection_retries"),
-			ConnectionTimeout: c.Int("connection_timeout"),
-			KeyField: c.String("key_field"),
-			ValueField: c.String("value_field"),
-			SkipTlsVerify: c.Bool("skip_tls_verify"),
-			OutputPath: c.String("output_path"),
-			OutputFormat: c.String("output_format"),
-			SectionName: c.String("section_name"),
-			EncodeSecrets: c.Bool("encode_secrets"),
-			Debug: c.Bool("debug"),
+			ApiEndpoint:        c.String("api_endpoint"),
+			ApiKey:             c.String("api_key"),
+			PasswordListId:     c.Int("password_list_id"),
+			ConnectionRetries:  c.Int("connection_retries"),
+			ConnectionTimeout:  c.Int("connection_timeout"),
+			KeyField:           c.String("key_field"),
+			ValueField:         c.String("value_field"),
+			SkipTlsVerify:      c.Bool("skip_tls_verify"),
+			OutputPath:         c.String("output_path"),
+			OutputFormat:       c.String("output_format"),
+			SectionName:        c.String("section_name"),
+			EncodeSecrets:      c.Bool("encode_secrets"),
+			Debug:              c.Bool("debug"),
 		},
 	}
 

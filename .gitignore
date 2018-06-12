@@ -17,3 +17,7 @@
 # Releases
 [Rr]elease/*
 !*.gitkeep
+
+# Editor specific
+.idea
+.vscode
