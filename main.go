@@ -108,7 +108,7 @@ func run(c *cli.Context) error {
 			ConnectionTimeout:  c.Int("connection_timeout"),
 			KeyField:           c.String("key_field"),
 			ValueField:         c.String("value_field"),
-            SkipTlsVerify:      c.Bool("skip_tls_verify"),
+			SkipTlsVerify:      c.Bool("skip_tls_verify"),
 			OutputPath:         c.String("output_path"),
 			OutputFormat:       c.String("output_format"),
 			SectionName:        c.String("section_name"),
