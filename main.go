@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tdabasinskas/drone-passwordstate/plugin"
+	"github.com/TDabasinskas/drone-passwordstate/plugin"
 	"github.com/urfave/cli"
 	"os"
 )
