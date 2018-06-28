@@ -3,6 +3,7 @@ package plugin
 import (
 	"crypto/tls"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"github.com/go-resty/resty"
 	"github.com/mattn/go-colorable"
@@ -64,16 +65,16 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 	if p.Config.PasswordListId == 0 {
-		logrus.WithField("list_id", p.Config.ApiEndpoint).Errorln("Provided list ID is not valid.")
-		return nil
+		logrus.WithField("list_id", p.Config.PasswordListId).Errorln("Provided list ID is not valid.")
+		return errors.New("provided list ID is not valid")
 	}
 	if p.Config.ApiKey == "" {
 		logrus.Errorln("API key is mandatory.")
-		return nil
+		return errors.New("api key is mandatory")
 	}
 	if p.Config.OutputFormat != "YAML" {
 		logrus.Errorln("Currently only YAML format is supported.")
-		return nil
+		return errors.New("currently only YAML format is supported")
 	}
 
 	// Retrieve the secrets from PasswordState:
@@ -84,7 +85,7 @@ func (p *Plugin) Exec() error {
 
 	if p.Config.NoSecretsFail && len(secrets) == 0 {
 		logrus.Errorln("No secrets were retrieved from PasswordState and NO_SECRETS_FAIL is set. Terminating.")
-		return nil
+		return errors.New("no secrets were retrieved from PasswordState")
 	}
 
 	// Save the secrets to file:
