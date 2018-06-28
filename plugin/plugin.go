@@ -31,6 +31,7 @@ type (
 		OutputFormat      string
 		SectionName       string
 		Debug             bool
+		NoSecretsFail     bool
 	}
 	// Plugin parameters
 	Plugin struct {
@@ -81,8 +82,8 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 
-	if len(secrets) == 0 {
-		logrus.Warnln("Secrets were retrieved from PasswordState, but none of them could be converted to Key-Value pairs. Terminating.")
+	if p.Config.NoSecretsFail && len(secrets) == 0 {
+		logrus.Errorln("No secrets were retrieved from PasswordState and NO_SECRETS_FAIL is set. Terminating.")
 		return nil
 	}
 

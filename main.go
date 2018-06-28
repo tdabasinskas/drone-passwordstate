@@ -91,6 +91,11 @@ func main() {
 			Usage:  "enable debug output",
 			EnvVar: "PLUGIN_DEBUG,DEBUG",
 		},
+		cli.BoolFlag{
+			Name:   "no_secrets_fail",
+			Usage:  "Fail if no secrets were extracted from PasswordState",
+			EnvVar: "PLUGIN_NO_SECRETS_FAIL,NO_SECRETS_FAIL",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -114,6 +119,7 @@ func run(c *cli.Context) error {
 			SectionName:       c.String("section_name"),
 			EncodeSecrets:     c.Bool("encode_secrets"),
 			Debug:             c.Bool("debug"),
+			NoSecretsFail:     c.Bool("no_secrets_fail"),
 		},
 	}
 
