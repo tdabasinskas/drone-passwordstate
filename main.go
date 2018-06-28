@@ -1,14 +1,13 @@
 package main
 
-import	(
-	"log"
-	"os"
-	"github.com/urfave/cli"
+import (
 	"github.com/TDabasinskas/drone-passwordstate/plugin"
+	"github.com/urfave/cli"
+	"os"
 )
 
 var (
-    // Will be provided during the build
+	// Will be provided during the build
 	version = "0.0.0"
 )
 
@@ -37,13 +36,13 @@ func main() {
 		cli.IntFlag{
 			Name:   "connection_retries",
 			Usage:  "number of retries in case of failed connections",
-			Value: 3,
+			Value:  3,
 			EnvVar: "PLUGIN_CONNECTION_RETRIES,CONNECTION_RETRIES",
 		},
 		cli.IntFlag{
 			Name:   "connection_timeout",
 			Usage:  "number of seconds for the connection to timeout",
-			Value: 5,
+			Value:  5,
 			EnvVar: "PLUGIN_CONNECTION_TIMEOUT,CONNECTION_TIMEOUT",
 		},
 		cli.BoolFlag{
@@ -53,31 +52,31 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:   "key_field",
-			Value: "UserName",
+			Value:  "UserName",
 			Usage:  "the field, which will be used as the key of the secret",
 			EnvVar: "PLUGIN_KEY_FIELD,KEY_FIELD",
 		},
 		cli.StringFlag{
 			Name:   "value_field",
-			Value: "Password",
+			Value:  "Password",
 			Usage:  "the field, which will be used as the value of the secret",
 			EnvVar: "PLUGIN_VALUE_FIELD,VALUE_FIELD",
 		},
 		cli.StringFlag{
 			Name:   "output_path",
-			Value: "./secrets.yaml",
+			Value:  "./secrets.yaml",
 			Usage:  "the path of the file to export the secrets to",
 			EnvVar: "PLUGIN_OUTPUT_PATH,OUTPUT_PATH",
 		},
 		cli.StringFlag{
 			Name:   "output_format",
-			Value: "YAML",
+			Value:  "YAML",
 			Usage:  "output format (currently, only YAML is supported)",
 			EnvVar: "PLUGIN_OUTPUT_FORMAT,OUTPUT_FORMAT",
 		},
 		cli.StringFlag{
 			Name:   "section_name",
-			Value: "secrets",
+			Value:  "secrets",
 			Usage:  "add the secrets under the specified key",
 			EnvVar: "PLUGIN_SECTION_NAME,SECTION_NAME",
 		},
@@ -91,29 +90,35 @@ func main() {
 			Usage:  "enable debug output",
 			EnvVar: "PLUGIN_DEBUG,DEBUG",
 		},
+		cli.BoolFlag{
+			Name:   "no_secrets_fail",
+			Usage:  "Fail if no secrets were extracted from PasswordState",
+			EnvVar: "PLUGIN_NO_SECRETS_FAIL,NO_SECRETS_FAIL",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		os.Exit(1)
 	}
 }
 
 func run(c *cli.Context) error {
 	plugin := plugin.Plugin{
 		Config: plugin.Config{
-			ApiEndpoint:        c.String("api_endpoint"),
-			ApiKey:             c.String("api_key"),
-			PasswordListId:     c.Int("password_list_id"),
-			ConnectionRetries:  c.Int("connection_retries"),
-			ConnectionTimeout:  c.Int("connection_timeout"),
-			KeyField:           c.String("key_field"),
-			ValueField:         c.String("value_field"),
-			SkipTlsVerify:      c.Bool("skip_tls_verify"),
-			OutputPath:         c.String("output_path"),
-			OutputFormat:       c.String("output_format"),
-			SectionName:        c.String("section_name"),
-			EncodeSecrets:      c.Bool("encode_secrets"),
-			Debug:              c.Bool("debug"),
+			ApiEndpoint:       c.String("api_endpoint"),
+			ApiKey:            c.String("api_key"),
+			PasswordListId:    c.Int("password_list_id"),
+			ConnectionRetries: c.Int("connection_retries"),
+			ConnectionTimeout: c.Int("connection_timeout"),
+			KeyField:          c.String("key_field"),
+			ValueField:        c.String("value_field"),
+			SkipTlsVerify:     c.Bool("skip_tls_verify"),
+			OutputPath:        c.String("output_path"),
+			OutputFormat:      c.String("output_format"),
+			SectionName:       c.String("section_name"),
+			EncodeSecrets:     c.Bool("encode_secrets"),
+			Debug:             c.Bool("debug"),
+			NoSecretsFail:     c.Bool("no_secrets_fail"),
 		},
 	}
 

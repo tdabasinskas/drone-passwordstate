@@ -1,36 +1,38 @@
 package plugin
 
 import (
-	"github.com/go-resty/resty"
 	"crypto/tls"
-	"time"
-	"strings"
-	"strconv"
-	"reflect"
-	"os"
-	"fmt"
 	"encoding/base64"
-	"github.com/sirupsen/logrus"
+	"errors"
+	"fmt"
+	"github.com/go-resty/resty"
 	"github.com/mattn/go-colorable"
+	"github.com/sirupsen/logrus"
 	"net/url"
+	"os"
+	"reflect"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type (
 	// Plugin configuration
 	Config struct {
-		ApiEndpoint			string
-		ApiKey 				string
-		PasswordListId		int
-		ConnectionRetries	int
-		ConnectionTimeout   int
-		SkipTlsVerify  	 	bool
-		KeyField			string
-		ValueField			string
-		EncodeSecrets		bool
-		OutputPath			string
-		OutputFormat		string
-		SectionName			string
-		Debug				bool
+		ApiEndpoint       string
+		ApiKey            string
+		PasswordListId    int
+		ConnectionRetries int
+		ConnectionTimeout int
+		SkipTlsVerify     bool
+		KeyField          string
+		ValueField        string
+		EncodeSecrets     bool
+		OutputPath        string
+		OutputFormat      string
+		SectionName       string
+		Debug             bool
+		NoSecretsFail     bool
 	}
 	// Plugin parameters
 	Plugin struct {
@@ -38,8 +40,8 @@ type (
 	}
 	// KV Secret
 	Secret struct {
-		Key		string
-		Value	string
+		Key   string
+		Value string
 	}
 )
 
@@ -47,7 +49,7 @@ type (
 func (p *Plugin) Exec() error {
 
 	// Initiate the logging
-	logrus.SetFormatter(&logrus.TextFormatter{ForceColors:true, FullTimestamp:true})
+	logrus.SetFormatter(&logrus.TextFormatter{ForceColors: true, FullTimestamp: true})
 	logrus.SetOutput(colorable.NewColorableStdout())
 	if p.Config.Debug {
 		logrus.SetLevel(logrus.DebugLevel)
@@ -63,16 +65,16 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 	if p.Config.PasswordListId == 0 {
-		logrus.WithField("list_id", p.Config.ApiEndpoint).Errorln("Provided list ID is not valid.")
-		return nil
+		logrus.WithField("list_id", p.Config.PasswordListId).Errorln("Provided list ID is not valid.")
+		return errors.New("provided list ID is not valid")
 	}
 	if p.Config.ApiKey == "" {
 		logrus.Errorln("API key is mandatory.")
-		return nil
+		return errors.New("api key is mandatory")
 	}
 	if p.Config.OutputFormat != "YAML" {
 		logrus.Errorln("Currently only YAML format is supported.")
-		return nil
+		return errors.New("currently only YAML format is supported")
 	}
 
 	// Retrieve the secrets from PasswordState:
@@ -81,9 +83,9 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 
-	if len(secrets) == 0 {
-		logrus.Warnln("Secrets were retrieved from PasswordState, but none of them could be converted to Key-Value pairs. Terminating.")
-		return nil;
+	if p.Config.NoSecretsFail && len(secrets) == 0 {
+		logrus.Errorln("No secrets were retrieved from PasswordState and NO_SECRETS_FAIL is set. Terminating.")
+		return errors.New("no secrets were retrieved from PasswordState")
 	}
 
 	// Save the secrets to file:
@@ -97,7 +99,7 @@ func (p *Plugin) Exec() error {
 
 // Saves the secrets to YAML file
 func outputToYaml(filename string, section string, encode bool, secrets []Secret) error {
-	logrus.WithField("output_path",  filename).Infoln("Writing secrets to the file.")
+	logrus.WithField("output_path", filename).Infoln("Writing secrets to the file.")
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
 	defer f.Close()
 	if err != nil {
@@ -153,7 +155,7 @@ func getSecrets(p *Plugin) ([]Secret, error) {
 
 	var (
 		url     strings.Builder
-		secrets	[]Secret
+		secrets []Secret
 	)
 
 	url.WriteString(strings.TrimRight(p.Config.ApiEndpoint, "/"))
@@ -168,30 +170,30 @@ func getSecrets(p *Plugin) ([]Secret, error) {
 		client.SetDebug(true)
 	}
 	if p.Config.SkipTlsVerify {
-		client.SetTLSClientConfig(&tls.Config{ InsecureSkipVerify: p.Config.SkipTlsVerify })
+		client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: p.Config.SkipTlsVerify})
 	}
 	client.
 		SetQueryParams(map[string]string{
-			"QueryAll": "true",
+			"QueryAll":        "true",
 			"PreventAuditing": "false",
 		}).
 		SetPathParams(map[string]string{
 			"PasswordListID": strconv.Itoa(p.Config.PasswordListId),
 		}).
 		SetHeaders(map[string]string{
-			"APIKey": p.Config.ApiKey,
+			"APIKey":       p.Config.ApiKey,
 			"Content-Type": "application/json",
 		})
 
 	// Send the request:
-	logrus.WithField("endpoint", p.Config.ApiEndpoint).	WithField("list_id", p.Config.PasswordListId).Infoln("Querying PasswordState API.")
+	logrus.WithField("endpoint", p.Config.ApiEndpoint).WithField("list_id", p.Config.PasswordListId).Infoln("Querying PasswordState API.")
 	response, err := client.R().
 		SetResult([]PasswordList{}).
 		Get(url.String())
 
 	if err != nil {
 		logrus.WithError(err).Errorln("Failed to retrieved data from PasswordState.")
-		return nil,err
+		return nil, err
 	}
 
 	passwords := *response.Result().(*[]PasswordList)
@@ -209,12 +211,12 @@ func getSecrets(p *Plugin) ([]Secret, error) {
 			continue
 		}
 		secret := Secret{
-			Key: key,
+			Key:   key,
 			Value: value,
 		}
 		secrets = append(secrets, secret)
 	}
 
 	logrus.WithField("count", len(secrets)).Infoln("Finished processing the secrets.")
-	return secrets,nil
+	return secrets, nil
 }
