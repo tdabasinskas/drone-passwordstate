@@ -109,8 +109,8 @@ func outputToYaml(filename string, section string, encode bool, secrets []Secret
 	f.WriteString(fmt.Sprintf("---\n%s:\n", string(section)))
 	for _, secret := range secrets {
 		// Trim spaces and encode the secrets if needed:
-        key = strings.Trim(secret.Key, " ")
-        value = strings.Trim(secret.Value, " ")
+        key := strings.Trim(secret.Key, " ")
+        value := strings.Trim(secret.Value, " ")
 		if encode {
 			value = base64.StdEncoding.EncodeToString([]byte(value))
         }
