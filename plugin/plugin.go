@@ -108,16 +108,15 @@ func outputToYaml(filename string, section string, encode bool, secrets []Secret
 	}
 	f.WriteString(fmt.Sprintf("---\n%s:\n", string(section)))
 	for _, secret := range secrets {
-		// Encode the secrets if needed:
-		var value string
+		// Trim spaces and encode the secrets if needed:
+        key = strings.Trim(secret.Key, " ")
+        value = strings.Trim(secret.Value, " ")
 		if encode {
-			value = base64.StdEncoding.EncodeToString([]byte(secret.Value))
-		} else {
-			value = secret.Value
-		}
+			value = base64.StdEncoding.EncodeToString([]byte(value))
+        }
 
-		logrus.WithField("key", secret.Key).WithField("value", "(hidden)").Infoln("Secret saved.")
-		f.WriteString(fmt.Sprintf("  %s: '%s'\n", secret.Key, value))
+		logrus.WithField("key", key).WithField("value", "(hidden)").Infoln("Secret saved.")
+		f.WriteString(fmt.Sprintf("  %s: '%s'\n", key, value))
 	}
 
 	logrus.WithField("outputPath", filename).WithField("count", len(secrets)).Infoln("Secrets successfully saved to the file.")
