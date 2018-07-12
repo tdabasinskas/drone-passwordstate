@@ -64,6 +64,8 @@ pipeline:
     value_field: GenericField6
 ```
 
+However, please note, that "Generic Fields", even when renamed in Passwordstate, still have to be entered as "GenericField1", "GenericField2" and so on for password retrieval to work.
+
 ### Using the plugin for Kubernetes secrets
 
 One of the most likely use case for the plugin would be combining it with [drone-helm plugin](https://github.com/ipedrazas/drone-helm), allowing you to deploy the secrets as part of the whole [Helm chart](https://github.com/kubernetes/helm). The following example illustrates the pipeline combining these two plugins:
