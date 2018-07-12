@@ -64,7 +64,7 @@ pipeline:
     value_field: GenericField6
 ```
 
-However, please note, that "Generic Fields", even when renamed in Passwordstate, still have to be entered as "GenericField1", "GenericField2" for password retrieval to work.
+However, please note, that "Generic Fields", even when renamed in Passwordstate, still have to be entered as "GenericField1", "GenericField2" and so on for password retrieval to work.
 
 ### Using the plugin for Kubernetes secrets
 
