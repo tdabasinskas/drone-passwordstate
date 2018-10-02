@@ -10,7 +10,7 @@
 
 ### Simple usage
 
-To simply export all the secrets from the specified Passwordstate to `./secrets.yaml` file, the following pipeline step should be added:
+To simply export all the secrets from the specified Passwordstate to a`./secrets.yaml` file, the following pipeline step should be added:
 
 ```yaml
 pipeline:
@@ -24,7 +24,7 @@ pipeline:
     secrets: [ PASSWORD_STATE_KEY ]
 ```
 
-The plugin would connect to the specified Password state instance and extract the passwords as secrets using `UserName` field as the secret key and `Password` field as the secret value. Once finished, the folllowing file would be created within the workspace:
+The plugin will connect to the specified Passwordstate instance and extract the passwords as secrets using `UserName` field as the secret key and `Password` field as the secret value. Once finished, the folllowing file will be created within the workspace:
 
 ```yaml
 secrets:
@@ -32,9 +32,9 @@ secrets:
   another_secret: 'another_secret_value'
 ```
 
-### Encoding the secrets
+### Encoding secrets
 
-By default, the secrets are exported *as-is*, meaning, they would need to separately encoded with BASE64 if used as Kubernetes secrets. To handle that automatically, `encode_secrets` parameter can be used, e.g.:
+By default, secrets are exported *as-is*, meaning, they would need to be separately encoded with BASE64 if used as Kubernetes secrets. To handle that automatically, `encode_secrets` parameter can be used, e.g.:
 
 ```yaml
 pipeline:
@@ -50,7 +50,7 @@ pipeline:
 
 ### Using different Key/Value fields
 
-As mentioned, by default, `UserName` and `Password` fields are used as the Key/Value pair. Anyhow, it's possible, to use different fields, e.g.:
+As mentioned, by default, `UserName` and `Password` fields are used as the Key/Value pair. However, different fields can be specified, e.g.:
 
 ```yaml
 pipeline:
@@ -64,7 +64,7 @@ pipeline:
     value_field: GenericField6
 ```
 
-However, please note, that "Generic Fields", even when renamed in Passwordstate, still have to be entered as "GenericField1", "GenericField2" and so on for password retrieval to work.
+Please note, that "Generic Fields", even when renamed in Passwordstate, still have to be entered as "GenericField1", "GenericField2" and so on for password retrieval to work.
 
 ### Using the plugin for Kubernetes secrets
 
